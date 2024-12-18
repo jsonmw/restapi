@@ -1,4 +1,4 @@
-package com.jason.restapi.responses;
+package com.jason.restapi.io;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;

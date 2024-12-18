@@ -1,4 +1,4 @@
-package com.jason.restapi.requests;
+package com.jason.restapi.io;
 
 import java.math.BigDecimal;
 import java.util.Date;
