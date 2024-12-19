@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.jason.restapi.DTO.ExpenseDTO;
 import com.jason.restapi.entities.ExpenseEntity;
+import com.jason.restapi.exceptions.ResourceNotFoundException;
 import com.jason.restapi.repository.ExpenseRepository;
 import com.jason.restapi.service.ExpenseService;
 
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service implementation for Expense module
+ * 
  * @author Jason
  */
 @Service
@@ -28,8 +30,9 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     /**
      * Retrieves all expenses from database
+     * 
      * @return list
-    */
+     */
     @Override
     public List<ExpenseDTO> getAllExpenses() {
         // Call repository method
@@ -45,11 +48,25 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     /**
+     * Fetches single expense details from database
+     * @param expenseId
+     * @return Expense DTO
+     */
+    @Override
+    public ExpenseDTO getExpenseByExpenseId(String expenseId) {
+        ExpenseEntity expenseEntity = expenseRepository.findByExpenseId(expenseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Expense not found for the id " + expenseId));
+        log.info("Printing the expense entity details {}", expenseEntity);
+        return mapToExpenseDTO(expenseEntity);
+    }
+
+    /**
      * Mapper method to convert expense entity to expense DTO
+     * 
      * @param expenseEntity
      * @return ExpenseDTO
      */
-    
+
     private ExpenseDTO mapToExpenseDTO(ExpenseEntity expenseEntity) {
         return modelMapper.map(expenseEntity, ExpenseDTO.class);
     }
