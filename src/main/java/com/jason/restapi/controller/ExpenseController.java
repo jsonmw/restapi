@@ -19,6 +19,13 @@ import com.jason.restapi.service.ExpenseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import com.jason.restapi.io.ExpenseRequest;
+
+import jakarta.validation.Valid;
+
 /**
  * This is the controller class for Expense module
  * 
@@ -79,6 +86,32 @@ public class ExpenseController {
     public void deleteExpenseByExpenseId(@PathVariable String expenseId) {
         log.info("API DELETE /expenses/{} called", expenseId);
         expenseService.deleteExpenseByExpenseId(expenseId);
+    }
+
+    /**
+     * Creates new expense in database
+     * 
+     * @param expenseRequest
+     * @return expenseResponse
+     */
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/expenses")
+    public ExpenseResponse saveExpenseDetails(@RequestBody @Valid ExpenseRequest expenseRequest) {
+        log.info("API POST /expenses called {}", expenseRequest);
+        ExpenseDTO expenseDTO = mapToExpenseDTO(expenseRequest);
+        expenseDTO = expenseService.saveExpenseDetails(expenseDTO);
+        log.info("Printing the expense DTO {}", expenseDTO);
+        return mapToExpenseResponse(expenseDTO);
+    }
+
+    /**
+     * Mapper method for converting expense request to Expense DTO object
+     * 
+     * @param expenseRequest
+     * @return ExpenseDTO
+     */
+    private ExpenseDTO mapToExpenseDTO(ExpenseRequest expenseRequest) {
+        return modelMapper.map(expenseRequest, ExpenseDTO.class);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.jason.restapi.service.impl;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -75,14 +76,39 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     /**
+     * Saves new expense in database
+     * 
+     * @param expenseDTO
+     * @return expenseDTO
+     */
+     @Override
+     public ExpenseDTO saveExpenseDetails(ExpenseDTO expenseDTO) {
+        ExpenseEntity expenseEntity = mapToExpenseEntity(expenseDTO);
+        expenseEntity.setExpenseId(UUID.randomUUID().toString());
+        expenseEntity = expenseRepository.save(expenseEntity);
+        log.info("Printing the new expense entity details {}", expenseEntity);
+        return mapToExpenseDTO(expenseEntity);
+     }
+
+    /**
      * Mapper method to convert expense entity to expense DTO
      * 
      * @param expenseEntity
      * @return ExpenseDTO
      */
-
     private ExpenseDTO mapToExpenseDTO(ExpenseEntity expenseEntity) {
         return modelMapper.map(expenseEntity, ExpenseDTO.class);
+    }
+
+    /**
+     * Mapper method to convert expense DTO to expense entity
+     * 
+     * @param expenseDTO
+     * @return ExpenseEntity
+     */
+
+    private ExpenseEntity mapToExpenseEntity(ExpenseDTO expenseDTO) {
+        return modelMapper.map(expenseDTO, ExpenseEntity.class);
     }
 
     /**
