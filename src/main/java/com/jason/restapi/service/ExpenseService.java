@@ -41,4 +41,13 @@ public interface ExpenseService {
      * @return expenseDTO
      */
     ExpenseDTO saveExpenseDetails(ExpenseDTO expenseDTO);
+
+    /**
+     * Updates expense in database
+     * 
+     * @param expenseDTO
+     * @param expenseId
+     * @return expenseDTO
+     */
+    ExpenseDTO updateExpenseDetails(ExpenseDTO expenseDTO, String expenseId);
 }
