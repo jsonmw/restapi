@@ -9,22 +9,21 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jason.restapi.DTO.ExpenseDTO;
+import com.jason.restapi.io.ExpenseRequest;
 import com.jason.restapi.io.ExpenseResponse;
 import com.jason.restapi.service.ExpenseService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PutMapping;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import com.jason.restapi.io.ExpenseRequest;
-
-import jakarta.validation.Valid;
 
 /**
  * This is the controller class for Expense module
@@ -101,6 +100,22 @@ public class ExpenseController {
         ExpenseDTO expenseDTO = mapToExpenseDTO(expenseRequest);
         expenseDTO = expenseService.saveExpenseDetails(expenseDTO);
         log.info("Printing the expense DTO {}", expenseDTO);
+        return mapToExpenseResponse(expenseDTO);
+    }
+
+    /**
+     * Update expense in database
+     * 
+     * @param expenseRequest
+     * @param expenseId
+     * @return expenseResponse
+     */
+    @PutMapping("/expenses/{expenseId}")
+    public ExpenseResponse updateExpenseDetails(@RequestBody ExpenseRequest updateRequest, @PathVariable String expenseId) {
+        log.info("API PUT /expenses{} request body {}", expenseId, updateRequest);
+        ExpenseDTO expenseDTO =  mapToExpenseDTO(updateRequest);
+        expenseDTO = expenseService.updateExpenseDetails(expenseDTO, expenseId);
+        log.info("Printing the updated expense DTO {}", expenseDTO);
         return mapToExpenseResponse(expenseDTO);
     }
 
