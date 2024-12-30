@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
 /**
  * This is the controller class for Expense module
  * 
@@ -33,7 +31,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin("*")
 public class ExpenseController {
     private final ExpenseService expenseService;
     private final ModelMapper modelMapper;
@@ -53,8 +50,7 @@ public class ExpenseController {
         log.info("Printing data from service {}", list);
 
         // Convert ExpenseDTO to ExpenseResponse
-        List<ExpenseResponse> response = list.stream()
-                .map(expenseDTO -> mapToExpenseResponse(expenseDTO))
+        List<ExpenseResponse> response = list.stream().map(expenseDTO -> mapToExpenseResponse(expenseDTO))
                 .collect(Collectors.toList());
 
         return response;
@@ -111,9 +107,10 @@ public class ExpenseController {
      * @return expenseResponse
      */
     @PutMapping("/expenses/{expenseId}")
-    public ExpenseResponse updateExpenseDetails(@RequestBody ExpenseRequest updateRequest, @PathVariable String expenseId) {
+    public ExpenseResponse updateExpenseDetails(@RequestBody ExpenseRequest updateRequest,
+            @PathVariable String expenseId) {
         log.info("API PUT /expenses{} request body {}", expenseId, updateRequest);
-        ExpenseDTO expenseDTO =  mapToExpenseDTO(updateRequest);
+        ExpenseDTO expenseDTO = mapToExpenseDTO(updateRequest);
         expenseDTO = expenseService.updateExpenseDetails(expenseDTO, expenseId);
         log.info("Printing the updated expense DTO {}", expenseDTO);
         return mapToExpenseResponse(expenseDTO);

@@ -37,12 +37,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ErrorObject handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         log.error("Throwing ResourceNotFoundException from Global Exception Handler {}", ex.getMessage());
 
-        return ErrorObject.builder()
-                .errorCode("DATA_NOT_FOUND")
-                .statusCode(HttpStatus.NOT_FOUND.value())
-                .message(ex.getMessage())
-                .timestamp(new Date())
-                .build();
+        return ErrorObject.builder().errorCode("DATA_NOT_FOUND").statusCode(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage()).timestamp(new Date()).build();
     }
 
     @Override

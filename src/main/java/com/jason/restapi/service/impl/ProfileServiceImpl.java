@@ -3,12 +3,13 @@ package com.jason.restapi.service.impl;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.jason.restapi.DTO.ProfileDTO;
 import com.jason.restapi.entities.ProfileEntity;
-import com.jason.restapi.service.ProfileService;
 import com.jason.restapi.repository.ProfileRepository;
+import com.jason.restapi.service.ProfileService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ProfileServiceImpl implements ProfileService {
     private final ProfileRepository profileRepository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder encoder;
 
     /**
      * Saves user details to database
@@ -33,6 +35,7 @@ public class ProfileServiceImpl implements ProfileService {
      */
     @Override
     public ProfileDTO createProfile(ProfileDTO profileDTO) {
+        profileDTO.setPassword(encoder.encode(profileDTO.getPassword()));
         ProfileEntity profileEntity = mapToProfileEntity(profileDTO);
         profileEntity.setProfileId(UUID.randomUUID().toString());
         profileEntity = profileRepository.save(profileEntity);

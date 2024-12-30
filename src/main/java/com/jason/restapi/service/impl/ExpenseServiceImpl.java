@@ -41,8 +41,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         log.info("Printing the data from repository {}", list);
 
         // Convert the Entity object to a DTO
-        List<ExpenseDTO> listOfExpenses = list.stream()
-                .map(expenseEntity -> mapToExpenseDTO(expenseEntity))
+        List<ExpenseDTO> listOfExpenses = list.stream().map(expenseEntity -> mapToExpenseDTO(expenseEntity))
                 .collect(Collectors.toList());
 
         return listOfExpenses;
@@ -81,14 +80,14 @@ public class ExpenseServiceImpl implements ExpenseService {
      * @param expenseDTO
      * @return expenseDTO
      */
-     @Override
-     public ExpenseDTO saveExpenseDetails(ExpenseDTO expenseDTO) {
+    @Override
+    public ExpenseDTO saveExpenseDetails(ExpenseDTO expenseDTO) {
         ExpenseEntity expenseEntity = mapToExpenseEntity(expenseDTO);
         expenseEntity.setExpenseId(UUID.randomUUID().toString());
         expenseEntity = expenseRepository.save(expenseEntity);
         log.info("Printing the new expense entity details {}", expenseEntity);
         return mapToExpenseDTO(expenseEntity);
-     }
+    }
 
     /**
      * Saves new expense in database
