@@ -8,11 +8,13 @@ import com.jason.restapi.entities.ExpenseEntity;
 
 /**
  * JPA Repository for Expense resource
+ * 
  * @author Jason
  */
 public interface ExpenseRepository extends JpaRepository<ExpenseEntity, Long> {
     /**
      * Fetches single expense details from database
+     * 
      * @param expenseId
      * @return Optional<ExpenseEntity>
      */
