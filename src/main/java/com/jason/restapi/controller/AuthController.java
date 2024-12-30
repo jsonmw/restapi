@@ -3,6 +3,8 @@ package com.jason.restapi.controller;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RestController;
@@ -65,10 +67,9 @@ public class AuthController {
      * @return AuthResponse
      */
     @PostMapping("/login")
-    public AuthResponse authenticate(@RequestBody AuthRequest authRequest) {
+    public AuthResponse authenticateProfile(@RequestBody AuthRequest authRequest) throws Exception {
         log.info("API /login invoked {}", authRequest);
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
+        authenticate(authRequest);
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getEmail());
         final String token = jwtTokenUtil.generateToken(userDetails);
         return new AuthResponse(token, authRequest.getEmail());
@@ -92,5 +93,17 @@ public class AuthController {
      */
     private ProfileDTO mapToProfileDTO(ProfileRequest profileRequest) {
         return modelMapper.map(profileRequest, ProfileDTO.class);
+    }
+
+    private void authenticate(AuthRequest authRequest) throws Exception {
+        try{
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
+
+        } catch (DisabledException ex) {
+            throw new Exception("Profile disabled");
+        } catch (BadCredentialsException ex) {
+            throw new Exception("Username or password not accepted");
+        }
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.jason.restapi.DTO.ProfileDTO;
 import com.jason.restapi.entities.ProfileEntity;
+import com.jason.restapi.exceptions.ItemExistsException;
 import com.jason.restapi.repository.ProfileRepository;
 import com.jason.restapi.service.ProfileService;
 
@@ -35,6 +36,9 @@ public class ProfileServiceImpl implements ProfileService {
      */
     @Override
     public ProfileDTO createProfile(ProfileDTO profileDTO) {
+        if (profileRepository.existsByEmail(profileDTO.getEmail())) {
+            throw new ItemExistsException("Profile already exists " + profileDTO.getEmail());
+        }
         profileDTO.setPassword(encoder.encode(profileDTO.getPassword()));
         ProfileEntity profileEntity = mapToProfileEntity(profileDTO);
         profileEntity.setProfileId(UUID.randomUUID().toString());

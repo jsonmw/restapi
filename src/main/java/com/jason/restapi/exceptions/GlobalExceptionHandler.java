@@ -60,4 +60,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<Object>(errorResponse, HttpStatus.BAD_REQUEST);
 
     }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ItemExistsException.class)
+    public ErrorObject handleItemExistsException(ItemExistsException ex, WebRequest request) {
+        log.error("Throwing ItemExistsException from Global Exception Handler {}", ex.getMessage());
+
+        return ErrorObject.builder().errorCode("DATA_EXISTS").statusCode(HttpStatus.CONFLICT.value())
+                .message(ex.getMessage()).timestamp(new Date()).build();
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    public ErrorObject handleGeneralException(Exception ex, WebRequest request) {
+        log.error("Throwing Exception from Global Exception Handler {}", ex.getMessage());
+
+        return ErrorObject.builder().errorCode("UNEXPECTED_ERROR").statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message(ex.getMessage()).timestamp(new Date()).build();
+    }
 }
