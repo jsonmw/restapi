@@ -1,5 +1,6 @@
 package com.jason.restapi.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +20,8 @@ public interface ExpenseRepository extends JpaRepository<ExpenseEntity, Long> {
      * @return Optional<ExpenseEntity>
      */
     Optional<ExpenseEntity> findByExpenseId(String expenseId);
+
+    List<ExpenseEntity> findByOwnerId(Long id);
+
+    Optional<ExpenseEntity> findByOwnerIdAndExpenseId(Long ownerId, String expenseId);
 }
