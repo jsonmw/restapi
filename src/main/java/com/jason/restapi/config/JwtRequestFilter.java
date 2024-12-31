@@ -10,6 +10,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.jason.restapi.service.CustomUserDetailsService;
+import com.jason.restapi.service.TokenBlacklistService;
 import com.jason.restapi.util.JwtTokenUtil;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -31,6 +32,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
+    @Autowired
+    private TokenBlacklistService tokenBlacklistService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -41,6 +45,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwtToken = requestTokenHeader.substring(7);
+            if(jwtToken != null && tokenBlacklistService.isTokenOnBlacklist(jwtToken)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
 
             try {
                 email = jwtTokenUtil.getUsernameFromToken(jwtToken);
